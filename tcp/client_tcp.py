@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal, QObject
+from PySide6.QtCore import Signal, QObject, QHostAddress
 from PySide6.QtNetwork import QTcpServer, QTcpSocket
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit
 
@@ -12,23 +12,29 @@ class Client_tcp(QMainWindow):
         self.text_edit = QTextEdit(self)
         self.setCentralWidget(self.text_edit)
 
-        self.server = QTcpServer(self)
-        self.server.newConnection.connect(self.on_new_connection)
+        self.socket = QTcpSocket(self)
+        self.socket.readyRead.connect(self.read_data)
+        self.socket.connected.connect(lambda: self.text_edit.append("Connected"))
+        self.socket.errorOccurred.connect(lambda err: self.text_edit.append(f" Error: {self.socket.errorString()}"))
 
-        if not self.server.listen(port=12345):
-            print("Failed to start the TCP server")
-        else:
-            print("TCP Server listening on port 12345")
+        self.socket.connectToHost(QHostAddress("192.168.2.2") ,12345)
 
-    def on_new_connection(self):
-        client_socket = self.server.nextPendingConnection()
-        client_socket.readyRead.connect(lambda: self.read_data(client_socket))
-        print("New client connected")
+        ## if not self.server.listen(QHostAddress("192.168.2.2") ,12345):
+        ##    print("Failed to start the TCP server")
+        ## else:
+        ##    port = self.server.serverPort();
+        ##    print(f"TCP Server listening on port {port}")
 
-    def read_data(self, socket):
-        data = socket.readAll().data().decode('utf-8')
+    ## def on_new_connection(self):
+     ##   client_socket = self.server.nextPendingConnection()
+     ##   client_socket.readyRead.connect(lambda: self.read_data(client_socket))
+     ##   print("New client connected from "+client_socket.peerAddress().toString() +
+     ##   " at port "+client_socket.peerPort())
+
+    def read_data(self):
+        data = self.socket.readAll().data().decode('utf-8')
         self.text_edit.append(f"Received from client: {data}")
-        socket.write("Acknowledged".encode('utf-8'))
+        ##socket.write("Acknowledged".encode('utf-8'))
 
 if __name__ == "__main__":
     app = QApplication([])
