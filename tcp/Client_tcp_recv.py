@@ -2,7 +2,7 @@ from PySide6.QtCore import Signal, QObject, QHostAddress
 from PySide6.QtNetwork import QTcpServer, QTcpSocket
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit
 
-class Client_tcp(QMainWindow):
+class Client_tcp_recv(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -10,6 +10,7 @@ class Client_tcp(QMainWindow):
         self.setGeometry(100, 100, 600, 400)
 
         self.text_edit = QTextEdit(self)
+        self.text_edit.setReadOnly(True)
         self.setCentralWidget(self.text_edit)
 
         self.socket = QTcpSocket(self)
@@ -32,12 +33,13 @@ class Client_tcp(QMainWindow):
      ##   " at port "+client_socket.peerPort())
 
     def read_data(self):
-        data = self.socket.readAll().data().decode('utf-8')
-        self.text_edit.append(f"Received from client: {data}")
-        ##socket.write("Acknowledged".encode('utf-8'))
+        while self.socket.bytesAvailable():
+            data = self.socket.readAll().data().decode('utf-8')
+            self.text_edit.append(f"Received from client: {data}")
+            ##socket.write("Acknowledged".encode('utf-8'))
 
 if __name__ == "__main__":
     app = QApplication([])
-    window = Client_tcp()
+    window = Client_tcp_recv()
     window.show()
     app.exec()
