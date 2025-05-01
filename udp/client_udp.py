@@ -2,7 +2,7 @@ from PySide6.QtCore import QHostAddress
 from PySide6.QtNetwork import QUdpSocket
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit
 
-class client_udp(QMainWindow):
+class Client_udp(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -28,6 +28,6 @@ class client_udp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication([])
-    window = client_udp()
+    window = Client_udp()
     window.show()
     app.exec()

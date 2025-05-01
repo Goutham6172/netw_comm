@@ -2,7 +2,7 @@ from PySide6.QtCore import Signal, QObject
 from PySide6.QtNetwork import QTcpServer, QTcpSocket
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit
 
-class client_tcp(QMainWindow):
+class Client_tcp(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -32,6 +32,6 @@ class client_tcp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication([])
-    window = client_tcp()
+    window = Client_tcp()
     window.show()
     app.exec()
